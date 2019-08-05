@@ -25,12 +25,12 @@ drop_table_queries = [drop_statement + " " + table for table in tables]
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS songplays(
 songplay_id serial PRIMARY KEY,
-start_time timestamptz,
-user_id int,
-level text,
-song_id text,
-artist_id text,
-session_id int,
+start_time timestamptz NOT NULL,
+user_id int NOT NULL,
+level text NOT NULL,
+song_id text NOT NULL,
+artist_id text NOT NULL,
+session_id int NOT NULL,
 location text,
 user_agent text
 )
@@ -39,18 +39,18 @@ user_agent text
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS users(
 user_id int PRIMARY KEY,
-first_name text,
-last_name text,
+first_name text NOT NULL,
+last_name text NOT NULL,
 gender text,
-level text
+level text NOT NULL
 )
 """)
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS songs(
 song_id text PRIMARY KEY,
-title text,
-artist_id text,
+title text NOT NULL,
+artist_id text NOT NULL,
 year int,
 duration numeric
 )
@@ -59,7 +59,7 @@ duration numeric
 artist_table_create = ("""
 CREATE TABLE IF NOT EXISTS artists(
 artist_id text PRIMARY KEY,
-name text,
+name text NOT NULL,
 location text,
 latitude numeric,
 longitude numeric
@@ -69,12 +69,12 @@ longitude numeric
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS time(
 start_time timestamptz PRIMARY KEY,
-hour int,
-day int,
-week int,
-month int,
-year int,
-weekday int
+hour int NOT NULL,
+day int NOT NULL,
+week int NOT NULL,
+month int NOT NULL,
+year int NOT NULL,
+weekday int NOT NULL
 )
 """)
 
@@ -119,7 +119,10 @@ VALUES(
 %s
 )
 ON CONFLICT (user_id)
-DO NOTHING
+DO UPDATE
+SET 
+level = EXCLUDED.level,
+last_name = EXCLUDED.last_name
 """)
 
 song_table_insert = ("""
